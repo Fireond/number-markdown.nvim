@@ -1,7 +1,9 @@
-local M = {}
+local M = {
+	_auto_update_enabled = nil,
+}
 
 local config = {
-	start_level = 1,
+	start_level = 2,
 	auto_update = true,
 }
 
@@ -12,26 +14,22 @@ function M.setup(opts)
 	vim.api.nvim_create_user_command("MDNumberHeaders", function()
 		M.number_headers()
 	end, {})
-	vim.api.nvim_create_user_command("MDClearHeaders", function()
+	vim.api.nvim_create_user_command("MDClearNumbers", function()
 		M.clear_numbers()
+	end, {})
+	vim.api.nvim_create_user_command("MDToggleAutoUpdate", function()
+		M.toggle_auto_update()
 	end, {})
 
 	-- Auto-update on save if enabled
-	if
-		type(config.auto_update) == "function" and config.auto_update()
-		or type(config.auto_update) == "boolean" and config.auto_update
-	then
-		vim.api.nvim_create_autocmd("BufWritePre", {
-			pattern = "*.md",
-			callback = function()
+	vim.api.nvim_create_autocmd("BufWritePre", {
+		pattern = "*.md",
+		callback = function()
+			if M.get_auto_update_status() then
 				M.number_headers()
-			end,
-		})
-	end
-end
-
-local function get_header_level(line)
-	return line:match("^(#+)%s+")
+			end
+		end,
+	})
 end
 
 local function generate_number(current_level, counters, start_level)
@@ -65,7 +63,8 @@ local function update_headers(bufnr, start_level)
 	local new_lines = {}
 
 	for _, line in ipairs(lines) do
-		local header_prefix = get_header_level(line)
+		local header_prefix = line:match("^(#+)%s+")
+
 		if header_prefix then
 			local current_level = #header_prefix
 			local existing_number, text = line:match("^#+%s+(%d[%d%.]*)%s+(.*)$")
@@ -108,7 +107,20 @@ function M.clear_numbers()
 	end
 
 	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, new_lines)
-	vim.notify("Cleared header numbers", vim.log.levels.INFO)
+end
+
+function M.toggle_auto_update()
+	M._auto_update_enabled = not M._auto_update_enabled
+	vim.notify("Auto-update " .. (M._auto_update_enabled and "enabled" or "disabled"), vim.log.levels.INFO)
+end
+
+function M.get_auto_update_status()
+	if M._auto_update_enabled == nil then
+		return type(config.auto_update) == "boolean" and config.auto_update
+			or type(config.auto_update) == "function" and config.auto_update()
+	else
+		return M._auto_update_enabled
+	end
 end
 
 return M

@@ -30,10 +30,13 @@ return {
 ```lua
 require("number-markdown").number_headers()
 require("number-markdown").clear_numbers()
+require("number-markdown").toggle_auto_update()
+require("number-markdown").get_auto_update_status()
 ```
 
 Commands:
 ```
 :MDNumberHeaders
 :MDClearHeaders
+:MDToggleAutoUpdate
 ```
