@@ -1,0 +1,72 @@
+*number-markdwon.txt*    Neovim Markdown Header Numbering Plugin
+
+==============================================================================
+CONTENTS                                 *number-markdwon-contents*
+
+1. Introduction ........ |number-markdwon-introduction|
+2. Requirements ........ |number-markdwon-requirements|
+3. Commands ............ |number-markdwon-commands|
+4. Configuration ....... |number-markdwon-configuration|
+5. Features ............ |number-markdwon-features|
+
+==============================================================================
+INTRODUCTION                             *number-markdwon-introduction*
+
+Automatically numbers markdown headers with hierarchical numbering. Supports:
+
+- Custom starting level (e.g. number from h2 headers)
+- Automatic renumbering when saving files
+- Handling inserted headers and maintaining correct numbering
+- Preservation of existing header content
+
+==============================================================================
+REQUIREMENTS                             *number-markdwon-requirements*
+
+- Neovim 0.7+
+- Filetype set to 'markdown'
+
+==============================================================================
+COMMANDS                                 *number-markdwon-commands*
+
+                                            *:MDNumberHeaders*
+:MDNumberHeaders
+    Manually renumber headers in current buffer
+
+==============================================================================
+CONFIGURATION                            *number-markdwon-configuration*
+
+Setup in your init.lua:
+>
+    require("number-markdwon").setup({
+        start_level = 1,    -- Start numbering from this header level (1-6)
+        auto_update = true  -- Auto-renumber on save
+    })
+<
+
+Options:
+    start_level (number) ~
+        Minimum header level to start numbering (e.g. 2 = ignore h1)
+
+    auto_update (boolean) ~
+        Enable automatic numbering before saving Markdown files
+
+==============================================================================
+FEATURES                                 *number-markdwon-features*
+
+1. Smart Numbering ~
+    - Maintains hierarchical numbering (e.g. 1.2.3)
+    - Resets sub-level counters when parent level changes
+
+2. Content Preservation ~
+    - Keeps existing header text intact
+    - Handles headers with existing numbers
+
+3. Dynamic Updates ~
+    - Correctly renumbers when inserting/moving headers
+    - Handles multiple header levels in any order
+
+4. Non-destructive ~
+    - Only modifies header numbers, preserves other content
+    - Maintains original whitespace formatting
+
+ vim:tw=78:ts=8:ft=help:norl:
