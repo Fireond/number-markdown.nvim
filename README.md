@@ -12,7 +12,7 @@ Neovim plugin for automatically numbering markdown headers.
 Using lazy.nvim:
 ```lua
 return {
-  "fireond/number-markdown.nvim"
+  "fireond/number-markdown.nvim",
   opts = {}
 }
 ```
