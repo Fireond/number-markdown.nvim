@@ -28,5 +28,12 @@ return {
 ## Usage
 
 ```lua
-require("number-markdown").renumber_headers()
+require("number-markdown").number_headers()
+require("number-markdown").clear_numbers()
+```
+
+Commands:
+```
+:MDNumberHeaders
+:MDClearHeaders
 ```
