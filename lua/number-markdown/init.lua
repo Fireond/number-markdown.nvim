@@ -32,24 +32,23 @@ function M.setup(opts)
 	})
 end
 
-local function generate_number(current_level, counters, start_level)
-	if current_level < start_level then
+local function generate_number(true_level, counters)
+	if true_level < 1 then
 		return ""
 	end
 
-	local level_index = current_level - start_level + 1
-	while #counters < level_index do
+	while #counters < true_level do
 		table.insert(counters, 0)
 	end
 
-	for i = level_index + 1, #counters do
+	for i = true_level + 1, #counters do
 		counters[i] = 0
 	end
 
-	counters[level_index] = counters[level_index] + 1
+	counters[true_level] = counters[true_level] + 1
 
 	local number = {}
-	for i = 1, level_index do
+	for i = 1, true_level do
 		table.insert(number, counters[i])
 	end
 
@@ -59,25 +58,43 @@ end
 local function update_headers(bufnr, start_level)
 	local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
 	local counters = {}
-	local last_level = 0
 	local new_lines = {}
+
+	local set_counter = false
+	local set_start_level = false
+	local next_counter = 0
 
 	for _, line in ipairs(lines) do
 		local header_prefix = line:match("^(#+)%s+")
+		local set_counter_value = tonumber(line:match("^%s*<!%-%-%s*set%s*counter%s*=%s*(%d+)%s*%-%->%s*$"))
+		local set_start_level_value = tonumber(line:match("^%s*<!%-%-%s*set%s*start_level=%s*(%d+)%s*%-%->%s*$"))
+
+		if not set_start_level and set_start_level_value then
+			start_level = set_start_level_value
+			set_start_level = true
+		end
+
+		if not set_counter and set_counter_value then
+			next_counter = set_counter_value
+			set_counter = true
+		end
 
 		if header_prefix then
-			local current_level = #header_prefix
+			local true_level = #header_prefix - start_level + 1
 			local existing_number, text = line:match("^#+%s+(%d[%d%.]*)%s+(.*)$")
 
 			if not existing_number then
 				text = line:match("^#+%s+(.*)$")
 			end
 
-			local number_str = generate_number(current_level, counters, start_level)
+			if set_counter then
+				counters[true_level] = next_counter - 1
+				set_counter = false
+			end
+
+			local number_str = generate_number(true_level, counters)
 			local new_line = header_prefix .. " " .. number_str .. (text or "")
 			table.insert(new_lines, new_line)
-
-			last_level = current_level
 		else
 			table.insert(new_lines, line)
 		end

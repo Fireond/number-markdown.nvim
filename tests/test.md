@@ -1,3 +1,4 @@
+<!-- set start_level=2 -->
 # H1
 
 Content
@@ -7,8 +8,12 @@ Content
 Content
 
 ## 2 H2
-## 3 H2
+<!-- set counter=8 -->
+## 8 H2
+## 9 H2
 
-Content
+<!-- Content
+a
+aa -->
 
-### 3.1 H3
+### 9.1 H3

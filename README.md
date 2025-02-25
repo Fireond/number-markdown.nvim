@@ -6,6 +6,7 @@ Neovim plugin for automatically numbering markdown headers.
 
 - Customizable starting level
 - Automatic renumbering on save
+- Support per file control using comments
 
 ## Installation
 
@@ -27,6 +28,8 @@ return {
 
 ## Usage
 
+### Functions
+
 ```lua
 require("number-markdown").number_headers()
 require("number-markdown").clear_numbers()
@@ -34,9 +37,31 @@ require("number-markdown").toggle_auto_update()
 require("number-markdown").get_auto_update_status()
 ```
 
-Commands:
+### Commands
+ 
 ```
 :MDNumberHeaders
 :MDClearHeaders
 :MDToggleAutoUpdate
+```
+
+### Per file control
+
+Search lines with syntax `set property = value`. Examples:
+
+- set `start_level`:
+```md
+<!-- set start_level=1 -->
+# 1 H1
+## 1.1 H2
+## 1.2 H2
+```
+
+- set `counter`:
+```md
+<!-- set start_level=1 -->
+# 1 H1
+## 1.1 H2
+<!-- set counter=5 -->
+## 1.5 H2
 ```
