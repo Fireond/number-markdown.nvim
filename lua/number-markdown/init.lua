@@ -67,7 +67,7 @@ local function update_headers(bufnr, start_level)
 	for _, line in ipairs(lines) do
 		local header_prefix = line:match("^(#+)%s+")
 		local set_counter_value = tonumber(line:match("^%s*<!%-%-%s*set%s*counter%s*=%s*(%d+)%s*%-%->%s*$"))
-		local set_start_level_value = tonumber(line:match("^%s*<!%-%-%s*set%s*start_level=%s*(%d+)%s*%-%->%s*$"))
+		local set_start_level_value = tonumber(line:match("^%s*<!%-%-%s*set%s*start_level%s*=%s*(%d+)%s*%-%->%s*$"))
 
 		if not set_start_level and set_start_level_value then
 			start_level = set_start_level_value
